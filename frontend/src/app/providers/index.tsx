@@ -1,4 +1,16 @@
-export const QueryProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-export const RouterProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+import { QueryProvider } from "./QueryProvider";
+import { RouterProvider } from "./RouterProvider";
+import { ThemeProvider } from "./ThemeProvider";
+import { AuthProvider } from "./AuthProvider"
+
+export const Providers = ({children}: { children: React.ReactNode}) => {
+    return (
+        <QueryProvider>
+            <ThemeProvider>
+                <RouterProvider>
+                    <AuthProvider>{children}</AuthProvider>                   
+                </RouterProvider>            
+            </ThemeProvider>           
+        </QueryProvider>
+    )
+}
