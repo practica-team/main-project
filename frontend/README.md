@@ -1,75 +1,227 @@
-# React + TypeScript + Vite
+# Структура прроекта
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+src/
+├── app/           # Инициализация приложения<br>
+├── pages/         # Страницы приложения<br>
+├── widgets/       # Самостоятельные блоки UI<br>
+├── features/      # Функциональные возможности<br>
+├── entities/      # Бизнес-сущности<br>
+└── shared/        # Переиспользуемый код<br>
 
-Currently, two official plugins are available:
+## Иерархия слоев для FSD
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+app (инициализация)
+  ->
+pages (страницы)
+  ->
+widgets (виджеты)
+  ->
+features (фичи)
+  ->
+entities (сущности)
+  ->
+shared (общее)
 
-## React Compiler
+**(*Правило: Слой может импортировать только из слоев, находящихся ниже в иерархии.*)**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Описание слоёв
 
-## Expanding the ESLint configuration
+<br>
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **app/** - Инициализация приложения
+Назначение: Точка входа в приложение, настройка провайдеров, роутинга и глобальных стилей.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+ - *providers/* — Провайдеры для всего приложения (React Query, Router, Theme, Auth)
+ - *routes/*— Конфигурация маршрутов и роутер
+ - *styles/* — Глобальные стили и тема MUI
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Правила:
+- Не содержит бизнес-логики
+- Только инициализация и подключение провайдеров
+- Минимальное количество кода
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+<br>
 
-```
+2. **pages/** - Страницы приложения
+Назначение: Контейнеры для виджетов и фич, представляющие отдельные страницы приложения.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+ - *auth/* — Страницы авторизации и регистрации
+ - *feed/* — Лента новостей
+ - *profile/* — Профиль пользователя
+ - *friends/* — Список друзей
+ - *messages/* — Сообщения и чат
+ - *groups/* — Группы/сообщества
+ - *notifications/* — Уведомления
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Правила:
+- Страница — это композиция виджетов и фич
+- Не содержит сложной бизнес-логики
+- Использует данные из entities через React Query
+- Отвечает за layout страницы
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+<br>
 
-```
+3. **widgets/** - Самостоятельные блоки UI
+Назначение: Независимые, переиспользуемые блоки интерфейса, которые могут содержать бизнес-логику.
+
+ - *header/* — Шапка сайта с навигацией и поиском
+ - *sidebar/* — Боковое меню с навигацией
+ - *post-card/* — Карточка поста (отображение, лайки, комментарии)
+ - *user-card/* — Карточка пользователя
+ - *message-list/* — Список сообщений в чате
+ - *friend-list/* — Список друзей
+ - *notification-list/* — Список уведомлений
+
+Правила:
+ - Виджет самодостаточен и может быть перемещен между страницами
+ - Может использовать фичи и сущности
+ - Имеет свой локальный стейт (если нужен)
+ - Экспортирует публичный API
+
+<br>
+
+4. **features/** - Функциональные возможности
+Назначение: Независимые, переиспользуемые блоки интерфейса, которые могут содержать бизнес-логику.Конкретные действия и интерактивные возможности
+пользователя.
+
+ - *auth-by-login/* — Авторизация по email/паролю
+ - *auth-by-phone/* — Авторизация по телефону
+ - *create-post/* — Создание нового поста
+ - *like-post/* — Лайк/дизлайк поста
+ - *comment-post/* — Добавление комментариев
+ - *add-friend/* — Добавление в друзья
+ - *send-message/* — Отправка сообщения
+ - *upload-avatar/* — Загрузка аватара
+ - *search-users/* — Поиск пользователей
+ - *infinite-scroll/* — Бесконечная прокрутка
+
+Правила:
+- Фича — это действие, которое может выполнить пользователь
+- Не может зависеть от других фич
+- Может использовать сущности и shared
+- Должна быть максимально изолирована
+
+<br>
+
+5. **entities/** - Бизнес-сущности
+Назначение: Модели или схемы, представляющие основные объекты приложения.
+
+ - *user/* — Пользователь (профиль, аватар, информация)
+ - *post/* — Пост (текст, изображения, лайки)
+ - *comment/* — Комментарий к посту
+ - *message/* — Сообщение в чате
+ - *group/* — Группа/сообщество
+ - *notification/* — Уведомление
+
+Структура объекта(как пример user/)<br>
+entities/user/<br>
+├── ui/              # UI компоненты (UserAvatar, UserInfo)<br>
+├── api/             # API запросы и React Query хуки<br>
+├── model/           # TypeScript типы, store (если нужен)<br>
+└── lib/             # Утилиты для работы с сущностью<br>
+
+Правила:
+- Сущность описывает бизнес-объект
+- Содержит API для работы с бэкендом
+- Предоставляет UI компоненты для отображения
+- Не содержит UI логики (только презентация)
+
+6. **shared/** - Переиспользуемый код
+Назначение: Базовые компоненты, утилиты и конфигурация, используемые во всем приложении.
+
+ - *ui/* — UI-kit
+ - *api/* — Базовый API
+ - *config/* — Конфигурация
+ - *lib/* — Утилиты
+ - *types/* — Общие типы
+
+Структура *ui/*<br>
+shared/ui/<br>
+├── button/     Кнопка (обертка над MUI Button)<br>
+├── input/      Поле ввода<br>
+├── modal/      Модальное окно<br>
+├── card/       Карточка<br>
+├── loader/     Индикатор загрузки<br>
+├── avatar/     Аватар<br>
+└── badge/      Бейдж<br>
+
+Структура *api/*<br>
+shared/api/<br>
+ - base.api.ts — Настроенный Axios клиент с интерсепторами
+ - socket.api.ts — Socket.IO клиент для real-time
+
+Структура *config/*<br>
+shared/config/<br>
+ - env.config.ts — Переменные окружения
+ - routes.ts — Константы маршрутов
+
+Структура *lib/*<br>
+shared/lib/<br>
+├── hooks/       Общие хуки (useDebounce, useInfiniteScroll)<br>
+├── helpers/     Вспомогательные функции (date.helpers, validation.helpers)<br>
+└── constants/   Константы приложения<br>
+
+Структура *types/*<br>
+shared/types/<br>
+- Глобальные TypeScript типы
+
+Правила:
+- Код должен быть максимально переиспользуемым
+- Не содержит бизнес-логики
+- Не зависит от других слоев (кроме других shared модулей)
+- Должен быть хорошо документирован
+
+
+## Стек
+
+Библиотека&nbsp;&nbsp;|&nbsp;&nbsp;Назначение&nbsp;&nbsp;                            |&nbsp;&nbsp;Где используется
+---------------------------------------------------------------------------------
+- React 19          |  UI фреймворк                             |  Все слои
+- TypeScript        |  основной язык программирования/Типизация |  Все слои
+- Vite              |  Сборщик и dev-сервер                     |  Конфигурация проекта
+- MUI               |  UI компоненты                            |  shared/ui/, виджеты, страницы
+- React Router DOM  |  Роутинг                                  |  app/routes/
+- TanStack Query    |  Управление серверным состоянием          |  entities/*/api/
+- Socket.IO Client  |  Real-time общение                        |  shared/api/socket.api.ts
+- React Hook Form   |  Управление формами                       |  features/*/ui/
+- Zod               |  Валидация данных                         |  features/*/model/
+- Axios             |  HTTP клиент                              |  shared/api/base.api.ts
+- Zustand           |  Глобальный стейт                         |  entities/*/model/ (опционально)
+- date-fns          |  Работа с датами                          |  shared/lib/helpers/
+- clsx              |  Условные классы CSS                      |shared/ui/
+---------------------------------------------------------------------------------
+
+## Правила разработки<br>
+### Что МОЖНО делать
+1. Импортировать из нижних слоев
+- pages может импортировать из widgets, features, entities, shared
+- widgets может импортировать из features, entities, shared
+- features может импортировать из entities, shared
+2. Экспортировать через index.ts
+- Каждый модуль должен иметь index.ts с публичным API
+- Не импортировать напрямую из внутренних файлов
+3. Использовать абсолютные импорты
+- import { Button } from '@shared/ui/button'
+- Настроить алиасы в vite.config.ts и tsconfig.json
+4. Типизировать всё
+- Все пропсы компонентов должны быть типизированы
+- API ответы должны иметь строгие типы
+- Избегать any
+5. Использовать React Query для серверного состояния
+- Все API запросы через useQuery и useMutation
+- Не хранить серверные данные в локальном стейте
+### Что НЕЛЬЗЯ делать
+1. Импортировать из верхних слоев
+- entities не может импортировать из features или pages
+- shared не может импортировать из других слоев
+2. Создавать циклические зависимости
+- Модуль A не может импортировать модуль B, если B импортирует A
+3. Дублировать код
+- Переиспользовать компоненты из shared/ui/
+- Переиспользовать хуки из shared/lib/hooks/
+4. Хранить серверное состояние в локальном стейте
+- Использовать React Query для кэширования
+- Не использовать useState для данных с бэкенда
+5. Смешивать слои
+- Не помещать бизнес-логику в shared/ui/
+- Не помещать UI логику в entities/
