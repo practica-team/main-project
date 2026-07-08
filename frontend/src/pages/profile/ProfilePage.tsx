@@ -1,3 +1,3 @@
 export const ProfilePage = () => {
-    return <div>Страница профиля</div>
-}
+    return <div>Страница профиля</div>;
+};

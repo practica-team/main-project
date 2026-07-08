@@ -1,3 +1,3 @@
 export const MessagesPage = () => {
-    return <div>Страница сообщений</div>
-}
+    return <div>Страница сообщений</div>;
+};

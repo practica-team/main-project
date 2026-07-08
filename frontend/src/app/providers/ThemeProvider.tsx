@@ -1,5 +1,5 @@
-import { ThemeProvider as MuiThemeProvider,createTheme } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
+import { ThemeProvider as MuiThemeProvider,createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 const theme = createTheme({
     palette:{
@@ -16,4 +16,4 @@ export const ThemeProvider = ({children}: {children: React.ReactNode}) => (
             {children}
         </CssBaseline>
     </MuiThemeProvider>
-)
+);
