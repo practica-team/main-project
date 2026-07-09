@@ -1,7 +1,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm instgit config --global --unset credential.helperall
 COPY frontend/ .
 RUN npm run build
 
