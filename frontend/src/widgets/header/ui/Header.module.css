@@ -1,0 +1,41 @@
+.header {
+    background-color: var(--color-primary);
+    box-shadow: none;
+}
+
+.toolbar {
+    max-width: var(--layout-max-width);
+    width: 100%;
+    margin: 0 auto;
+    gap: 16px;
+}
+
+.logo {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    min-width: 150px;
+}
+
+.searchBox {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 0 16px;
+    flex: 1;
+    max-width: 400px;
+}
+
+.searchInput {
+    color: white;
+    width: 100%;
+}
+
+.searchInput::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.notificationsButton {
+    color: white;
+}

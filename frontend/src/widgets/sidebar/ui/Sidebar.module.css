@@ -1,0 +1,38 @@
+.sidebar {
+    width: var(--sidebar-width);
+}
+
+.menuTitle {
+    color: var(--color-text-secondary);
+    margin-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.menuItem {
+    border-radius: 8px;
+    margin-bottom: 4px;
+    background-color: transparent;
+}
+
+.menuItemActive {
+    background-color: var(--color-sidebar-active);
+}
+
+.menuItem:hover {
+    background-color: var(--color-sidebar-active);
+}
+
+.menuIcon {
+    min-width: 36px;
+    color: var(--color-secondary);
+}
+
+.menuText {
+    font-size: 14px;
+    color: var(--color-secondary);
+}
+
+.menuTextActive {
+    font-weight: 600;
+}
