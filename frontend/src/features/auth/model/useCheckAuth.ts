@@ -8,12 +8,12 @@ export const useCheckAuth = () => {
 
 
     const login = (token: string) => {
-        localStorage.setItem('token', token);
+        storage.setToken(token);
         setIsAuthenticated(true);
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        storage.removeToken();
         setIsAuthenticated(false);
     };
 

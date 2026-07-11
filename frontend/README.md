@@ -1,12 +1,29 @@
-# Структура прроекта
+# Текущая структура прроекта
 
 src/
 ├── app/           # Инициализация приложения<br>
+│   ├── providers/   # Легкие глобальные провайдеры (React Query, MUI, Router, Auth)<br>
+│   ├── router/  # простая маршрутизация<br>
 ├── pages/         # Страницы приложения<br>
+│   ├── home/<br>
+│   ├── login/<br>
+│   ├── profile/<br>
+│   ├── messages/<br>
+│   ├── friends/<br>
+│   ├── register/<br>
+│   └── not-found/<br>
 ├── widgets/       # Самостоятельные блоки UI<br>
+│   ├── header/<br>
+│   ├── sidebar/<br>
+│   └── layout/<br>
 ├── features/      # Функциональные возможности<br>
+│   └── auth/ # Авторизация (хуки, типы, контекст)<br>
 ├── entities/      # Бизнес-сущности<br>
 └── shared/        # Переиспользуемый код<br>
+│   ├── constants/ # Константы 
+│   ├── lib/ # Утилиты (работа с localStorage)<br>
+│   ├── styles/ # Глобальные CSS-переменные и сброс стилей<br>
+│   └── types/ # Общие интерфейсы<br>
 
 ## Иерархия слоев для FSD
 
@@ -225,3 +242,17 @@ shared/types/<br>
 5. Смешивать слои
 - Не помещать бизнес-логику в shared/ui/
 - Не помещать UI логику в entities/
+
+<br>
+
+## Что сейчас реализованно
+
+- Проект настроен, все первичные необходимые зависимости установлены, создана структура проекта по принципам FSD, алиасы настрроены.
+- Созданы легкие провайдеры (QueryProvider, ThemeProvider, RouterProvider, AuthProvider), которые выполняют ровну одну задачу:<br>
+  <p style="text-indent: 50px;"> QueryProvider -	Инициализирует QueryClient и оборачивает children в QueryClientProvider.</p>
+  <p style="text-indent: 50px;">ThemeProvider	-	Создаёт тему MUI (пока статичную) и оборачивает children в ThemeProvider + CssBaseline.</p>
+  <p style="text-indent: 50px;">RouterProvider	-	Оборачивает children в BrowserRouter (по факту просто передаёт роутер).</p>
+  <p style="text-indent: 50px;">AuthProvider	-	Использует хук useCheckAuth и передаёт результат в контекст. Вся логика вынесена в хук.</p>
+  <p style="text-indent: 50px;">Providers Просто собирает все провайдеры в правильном порядке.</p>
+- Созданы базовые страницы заглушки в pages, а также они подключены роутеру AppRouter.tsx и настроенна маршрутизация с использованием react-router-dom.
+- Сделан простой Layout в (widgets) с шапкой и боковым меню: шапка сверху, боковое меню слева, контент с использованием MUI, а также в роутеры были изменения, теперь всё что не login/register работает через Layout, а также стилизация включена через отдельные CSS Modules:
