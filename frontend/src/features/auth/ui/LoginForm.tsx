@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '../model';
 import { useState } from 'react';
-import { $api } from '@shared';
+import { authApi } from '../api';
 import { Alert, Box, Button, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 
@@ -31,7 +31,7 @@ export const LoginForm = () => {
         try{
             setError(null);
 
-            const response = await $api.post('/auth/login', data);
+            const response = await authApi.login(data);
 
             const { token } = response.data;
 
@@ -39,8 +39,8 @@ export const LoginForm = () => {
 
             navigate('/');
         } catch(err: unknown){
-            const error = err as { response?: { data?: { messages?: string } } };
-            setError(error.response?.data?.messages || 'Ошибка при входе. Проверьте данные.');
+            const error = err as { response?: { data?: { message?: string } } };
+            setError(error.response?.data?.message || 'Ошибка при входе. Проверьте данные.');
         }
     };
 
