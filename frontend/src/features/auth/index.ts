@@ -1,6 +1,4 @@
-export { useAuth } from './hooks/useAuth';
-export { useCheckAuth } from './hooks/useCheckAuth';
+export { useAuth, useCheckAuth, AuthContext } from './model';
+export type { IAuthType } from './model';
 
-export { AuthContext } from './types/AuthContext';
-
-export type { IAuthType } from './types/auth-provider.interface';
+export { LoginForm } from './ui';
