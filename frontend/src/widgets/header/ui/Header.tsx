@@ -21,7 +21,7 @@ export const Header = () => {
                     to='/'
                     className={styles.logo}
                 >
-                    Аналог ВКонтакте
+                    Кампус
                 </Typography>
 
                 <Box
