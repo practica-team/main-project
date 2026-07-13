@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { storage } from '@shared';
 
 export const useCheckAuth = () => {
@@ -16,6 +16,18 @@ export const useCheckAuth = () => {
         storage.removeToken();
         setIsAuthenticated(false);
     };
+
+    useEffect(() => {
+        const handleGlobalLogout = () => {
+            logout();
+        };
+
+        window.addEventListener('auth:logout', handleGlobalLogout);
+
+        return () => {
+            window.removeEventListener('auth:logout', handleGlobalLogout);
+        };
+    });
 
     return { isAuthenticated, login, logout };
 };
