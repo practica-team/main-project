@@ -47,7 +47,7 @@ export const RegisterForm = () => {
             navigate('/');
         } catch (err: unknown){
             const error = err as { response?: { data?: { message?: string } } };
-            setError(error.response?.data?.message || 'Ошибка при регистрациию Проверьте введенные данные.');
+            setError(error.response?.data?.message || 'Ошибка при регистрации. Проверьте введенные данные.');
         }
     };
 
@@ -84,8 +84,8 @@ export const RegisterForm = () => {
                 fullWidth
                 margin="normal"
                 {...register('email')}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+                error={!!errors.email}
+                helperText={errors.email?.message}
             />
 
             <TextField 
@@ -93,8 +93,8 @@ export const RegisterForm = () => {
                 fullWidth
                 margin="normal"
                 {...register('password')}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+                error={!!errors.password}
+                helperText={errors.password?.message}
             />
 
             <TextField 
@@ -102,15 +102,15 @@ export const RegisterForm = () => {
                 fullWidth
                 margin="normal"
                 {...register('secondPassword')}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+                error={!!errors.secondPassword}
+                helperText={errors.secondPassword?.message}
             />
 
             <Button
                 type="submit"
                 variant="contained"
                 fullWidth
-                disabled
+                disabled={isSubmitting}
                 sx={{mt: 3, py: 1.5}}
             >
                 {isSubmitting ? 'Регистрация' : 'Зарегистрироваться'}
