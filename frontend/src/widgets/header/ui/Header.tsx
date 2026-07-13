@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link } from "react-router-dom";
 import styles from './Header.module.css';
+import { LogoutButton } from "@features/auth";
 
 export const Header = () => {
     return (
@@ -42,6 +43,8 @@ export const Header = () => {
                             <NotificationsIcon />
                         </Badge>
                     </IconButton>
+
+                    <LogoutButton />
                 </Box>
             </Toolbar>
         </AppBar>
