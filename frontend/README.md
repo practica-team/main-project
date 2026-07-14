@@ -20,6 +20,7 @@ src/
 ├── features/      # Функциональные возможности<br>
 │   └── auth/ # Авторизация (api, model, ui)<br>
 ├── entities/      # Бизнес-сущности<br>
+│   └── user/ # Сущность User  (api, model)<br>
 └── shared/        # Переиспользуемый код<br>
 │   ├── api/ # Базовый API клиент (axios с интерсепторами)<br>
 │   ├── constants/ # Константы <br>
@@ -265,3 +266,5 @@ shared/types/<br>
 - Создана форма логина(LoginForm.tsx)
 - Создана форма регистрации(UI компонент RegisterForm.tsx).
 - Создан компонент LogoutButton
+- Завершил обработку Auth Flow
+- Создал базовый слой entities/user, а также сделал отображение данных пользователя в UI

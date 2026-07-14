@@ -6,7 +6,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const { isAuthenticated, login, logout } = useCheckAuth();
+    const authData = useCheckAuth();
 
-    return <AuthContext.Provider value={{ isAuthenticated, login, logout }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;
 };
