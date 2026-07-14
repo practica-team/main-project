@@ -1,6 +1,10 @@
+import type { IUser } from "@entities/user";
+
 export interface IAuthType {
     isAuthenticated: boolean;
-    login: (token: string) => void;
+    isLoading: boolean;
+    user: IUser | null;
+    login: (token: string) => Promise<void>;
     logout: () => void;
 }
 
