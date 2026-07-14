@@ -35,8 +35,7 @@ export const LoginForm = () => {
 
             const { token } = response.data;
 
-            login(token);
-
+            await login(token);
             navigate('/');
         } catch(err: unknown){
             const error = err as { response?: { data?: { message?: string } } };

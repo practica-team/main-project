@@ -43,7 +43,7 @@ export const RegisterForm = () => {
             });
 
             const { token } = response.data;
-            login(token);
+            await login(token);
             navigate('/');
         } catch (err: unknown){
             const error = err as { response?: { data?: { message?: string } } };
