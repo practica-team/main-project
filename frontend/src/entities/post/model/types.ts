@@ -5,7 +5,7 @@ export interface IPost {
     content: string;
     author: IUser;
     createdAt: string;
-    likeCount?: number;
+    likesCount?: number;
     commentsCount?: number;
     imagePath?: string;
 };
