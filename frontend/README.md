@@ -18,9 +18,11 @@ src/
 │   ├── header/<br>
 │   └── sidebar/<br>
 ├── features/      # Функциональные возможности<br>
-│   └── auth/ # Авторизация (api, model, ui)<br>
+│   ├── auth/ # Авторизация (api, model, ui)<br>
+│   └── feed/ # Лента новостей (хук usePosts, ui)<br>
 ├── entities/      # Бизнес-сущности<br>
-│   └── user/ # Сущность User  (api, model)<br>
+│   ├── user/      # Сущность пользователя (types, api)<br>
+│   └── post/      # Сущность поста (types, api с маппером(пока))<br>
 └── shared/        # Переиспользуемый код<br>
 │   ├── api/ # Базовый API клиент (axios с интерсепторами)<br>
 │   ├── constants/ # Константы <br>
@@ -255,9 +257,11 @@ shared/types/<br>
   <p style="text-indent: 50px;"> QueryProvider -	Инициализирует QueryClient и оборачивает children в QueryClientProvider.</p>
   <p style="text-indent: 50px;">ThemeProvider	-	Создаёт тему MUI (пока статичную) и оборачивает children в ThemeProvider + CssBaseline.</p>
   <p style="text-indent: 50px;">RouterProvider	-	Оборачивает children в BrowserRouter (по факту просто передаёт роутер).</p>
-  <p style="text-indent: 50px;">AuthProvider	-	Использует хук useCheckAuth и передаёт результат в контекст. Вся логика вынесена в хук.</p>
+  <p style="text-indent: 50px;">AuthProvider	-	Использует хук useCheckAuth и передаёт результат в контекст. Вся логика вынесена в хук.Управляет асинхронной загрузкой
+данных пользователя и состоянием.</p>
   <p style="text-indent: 50px;">Providers Просто собирает все провайдеры в правильном порядке.</p>
-- Созданы базовые страницы заглушки в pages, а также они подключены роутеру AppRouter.tsx и настроенна маршрутизация с использованием react-router-dom.
+- Созданы базовые страницы в pages(пока не все некторые являются заглушками), а также они подключены роутеру AppRouter.tsx и настроенна маршрутизация с использованием
+react-router-dom.
 - Сделан простой Layout в (widgets) с шапкой и боковым меню: шапка сверху, боковое меню слева, контент с использованием MUI, а также в роутеры были изменения, теперь всё что не login/register работает через Layout, а также стилизация включена через отдельные CSS Modules:
 - Защита путей (ProtectedRoute), все остальные маршруты ("/", "/profile", "/friends", "/messages") - обёрнуты (ProtectedRoute), при попытки зайти не
 авторизированным перекинит на "/login", но "/login" и "/register" — без защиты (публичные страницы).
@@ -266,5 +270,8 @@ shared/types/<br>
 - Создана форма логина(LoginForm.tsx)
 - Создана форма регистрации(UI компонент RegisterForm.tsx).
 - Создан компонент LogoutButton
-- Завершил обработку Auth Flow
-- Создал базовый слой entities/user, а также сделал отображение данных пользователя в UI
+- Частино завершенна Auth Flow с обработкой ошибок 401
+- Создан слой entities/user
+- Добавлено отображение данных пользователя (Header с аватаром и username, ProfilePage с полной информацией)
+- Создан сслой entities/post с маппером(Лента новостей) entities/post; features/feed с useReducer; PostCard, Feed, SkeletonPost;Создание постов с изображениями (FormData
+;Удаление постов
