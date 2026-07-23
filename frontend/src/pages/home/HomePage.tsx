@@ -1,44 +1,60 @@
 import { useAuth } from "@features/auth";
-import { Feed } from "@features/feed";
-import { Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
-import { useState, useRef, useEffect } from "react";
+import { Feed, usePosts } from "@features/feed";
+import { postApi } from "@entities/post";
+import { Box, Button, Card, CardContent, Grid, TextField, Typography, Alert } from "@mui/material";
+import { useState, useRef } from "react";
 
 export const HomePage = () => {
     const { user } = useAuth();
+    const { addPost } = usePosts();
+    
     const [content, setContent] = useState('');
     const [image, setImage] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const isMountedRef = useRef(true);
+    const [error, setError] = useState<string | null>(null);
+    
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => {
-        return () => {
-            isMountedRef.current = false;
-        };
-    }, []);
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
+    };
+
+    const clearForm = () => {
+        setContent('');
+        setImage(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
 
     const handleSubmit = async () => {
         if (!user || !content.trim()) return;
-
+        
         setIsLoading(true);
+        setError(null);
+        
         try {
             const formData = new FormData();
-            formData.append('content', content);
+            formData.append('text', content); 
             if (image) {
                 formData.append('image', image);
             }
 
-            await new Promise(resolve => setTimeout(resolve, 500));//Симуляция работы с бекендом
-
-            if (!isMountedRef.current) return;
-
-            setContent('');
-            setImage(null);
-        } catch (error) {
-            console.error('Ошибка при создании поста:', error);
+            const response = await postApi.createPost(formData);
+            
+            addPost(response.data);
+            clearForm();
+            
+        } catch (err: unknown) {
+            console.error('Ошибка при создании поста:', err);
+            const errorMessage = err && typeof err === 'object' && 'response' in err 
+                ? (err as { response?: { data?: { message?: string } } }).response?.data?.message 
+                : 'Не удалось опубликовать пост. Попробуйте позже.';
+            setError(errorMessage || 'Не удалось опубликовать пост. Попробуйте позже.');     
         } finally {
-            if (isMountedRef.current) {
-                setIsLoading(false);
-            }
+            setIsLoading(false);
         }
     };
 
@@ -49,62 +65,76 @@ export const HomePage = () => {
                     <Card sx={{ mb: 3 }}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
-                                Создать пост
+                                Что у вас нового, {user.username}?
                             </Typography>
-                            <textarea
+                            
+                            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                            
+                            <TextField
+                                multiline
+                                rows={3}
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
-                                placeholder="Что у вас нового?"
-                                style={{
-                                    width: '100%',
-                                    padding: '12px',
-                                    borderRadius: '4px',
-                                    border: '1px solid #ddd',
-                                    marginBottom: '16px',
-                                    fontSize: '16px',
-                                }}
+                                placeholder="Что нового"
+                                fullWidth
+                                margin="normal"
+                                variant="outlined"
                             />
+                            
                             {image && (
-                                <Box sx={{ mb: 2, textAlign: 'center' }}>
-                                    <img
-                                        src={URL.createObjectURL(image)}
-                                        alt="Просмотр"
-                                        style={{
-                                            maxWidth: '100%',
-                                            maxHeight: '200px',
-                                            borderRadius: '4px',
-                                        }}
+                                <Box sx={{ mb: 2, textAlign: 'center', position: 'relative' }}>
+                                    <img 
+                                        src={URL.createObjectURL(image)} 
+                                        alt="Просмотр" 
+                                        style={{ 
+                                            maxWidth: '100%', 
+                                            maxHeight: '200px', 
+                                            borderRadius: '8px',
+                                            objectFit: 'cover'
+                                        }} 
                                     />
+                                    <Button 
+                                        size="small" 
+                                        color="error" 
+                                        onClick={() => setImage(null)}
+                                        sx={{ position: 'absolute', top: 0, right: 0 }}
+                                    >
+                                        Удалить
+                                    </Button>
                                 </Box>
                             )}
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                    if (e.target.files && e.target.files[0]) {
-                                        setImage(e.target.files[0]);
-                                    }
-                                }}
-                                style={{ display: 'none' }}
-                                id="image-upload"
-                            />
-                            <label htmlFor="image-upload">
+                            
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+                                <Box>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        ref={fileInputRef}
+                                        style={{ display: 'none' }}
+                                        id="image-upload"
+                                    />
+                                    <label htmlFor="image-upload">
+                                        <Button 
+                                            variant="outlined" 
+                                            component="span"
+                                            startIcon={<span></span>}
+                                            sx={{ textTransform: 'none' }}
+                                        >
+                                            Фото
+                                        </Button>
+                                    </label>
+                                </Box>
+                                
                                 <Button
-                                    variant="outlined"
-                                    component="span"
-                                    sx={{ mr: 1, textTransform: 'none' }}
+                                    variant="contained"
+                                    onClick={handleSubmit}
+                                    disabled={isLoading || !content.trim()}
+                                    sx={{ textTransform: 'none', px: 4 }}
                                 >
-                                    Добавить изображение
+                                    {isLoading ? 'Публикация...' : 'Опубликовать'}
                                 </Button>
-                            </label>
-                            <Button
-                                variant="contained"
-                                onClick={handleSubmit}
-                                disabled={isLoading || !content.trim()}
-                                sx={{ textTransform: 'none' }}
-                            >
-                                {isLoading ? 'Публикуется...' : 'Опубликовать'}
-                            </Button>
+                            </Box>
                         </CardContent>
                     </Card>
                 </Grid>

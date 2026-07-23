@@ -14,7 +14,7 @@ type Action =
     | { type: 'FETCH_ERROR'; payload: string }
     | { type: 'RESET'; }
     | { type: 'ADD_POST'; payload: IPost }
-    | { type: 'REMOVE_POST'; payload: string };
+    | { type: 'REMOVE_POST'; payload: number };
 
 
 const postsReducer = (state: State, action: Action): State => {
@@ -64,7 +64,7 @@ export const usePosts = () => {
                 dispatch({ type: 'FETCH_ERROR', payload: `Не удалось загрузить посты: ${message}` });
             }
         } finally {
-            if(isCancellRef) {
+            if(isCancellRef.current) {
                 dispatch({ type: 'FETCH_ERROR', payload: 'Запрос о постах отменён!' });
             }
         }
@@ -91,7 +91,7 @@ export const usePosts = () => {
         dispatch({ type: 'ADD_POST', payload: newPost });
     }, []);
 
-    const removePost = useCallback((postId: string) => {
+    const removePost = useCallback((postId: number) => {
         dispatch({ type: 'REMOVE_POST', payload: postId });
     }, []);
 
@@ -105,4 +105,3 @@ export const usePosts = () => {
         removePost,
     };
 };
-    
