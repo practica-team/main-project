@@ -31,6 +31,11 @@ PR в develop. Работает б*экенд-команда*.
 
 2. Начало спринта
 Каждый разработчик перед началом работы обязан обновить свою ролевую ветку из develop, чтобы взять последние изменения коллег:<br>
+Подтянуть все изменения
+    ```bash
+    git fetch --all
+    ```
+
 Например, для бэкендера:
     ```bash
     git checkout backend
@@ -91,7 +96,7 @@ PR в develop. Работает б*экенд-команда*.
         git checkout main
         git pull origin main
         git checkout develop
-        git merge main          
+        git merge origin/main          
         git push origin develop
     ```
 
@@ -116,7 +121,7 @@ PR в develop. Работает б*экенд-команда*.
 
 ### Пример
 
-- git commiit -m "work(DEV-32): изменил цвет у компонета React
+- git commit -m "work(DEV-32): изменил цвет у компонета React
 
 ## Формат написания кода
 
