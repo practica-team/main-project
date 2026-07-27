@@ -2,3 +2,4 @@ export { useCreatePostMutation, useDeletePostMutation, useLikePostMutation, useP
 export { Feed } from './ui/Feed';
 export { PostCard } from './ui/PostCard';
 export { SkeletonPost } from './ui/SkeletonPost';
+export { CreatePostForm } from './ui/CreatePostForm';

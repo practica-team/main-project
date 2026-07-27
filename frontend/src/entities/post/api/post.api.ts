@@ -19,7 +19,7 @@ const mapPostResponse = (data: IPostRawResponse): IPost => ({
     id: typeof data.id === 'number' ? data.id : Number(data.id),
     content: data.text || data.content || '',
     author: data.author || {
-        id: String(data.authorId),
+        id: String(data.authorId ?? 0),
         username: 'User',
         email: '',
         avatarPath: undefined,
@@ -39,7 +39,7 @@ export const postApi = {
     
     createPost: async (formData: FormData) => {
         const response = await $api.post<IPostRawResponse>('/posts', formData);
-        return { ...response, data: mapPostResponse(response.data) };
+        return { data: mapPostResponse(response.data) };
     },
     
     likePost: (postId: number) => $api.post(`/posts/${postId}/like`),
