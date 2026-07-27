@@ -8,6 +8,7 @@ export interface IPost {
     likesCount?: number;
     commentsCount?: number;
     imagePath?: string;
+    isLiked?: boolean;
 }
 
 export interface IPostCreatePayload{
