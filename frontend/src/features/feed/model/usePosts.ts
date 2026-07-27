@@ -1,107 +1,82 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { postApi, type IPost } from "@entities/post";
-import { useAuth } from "@features/auth";
-import { useCallback, useEffect, useReducer, useRef } from "react";
 
-type State = {
-    posts: IPost[];
-    isLoading: boolean;
-    error: string | null;
-};
-
-type Action = 
-    | { type: 'FETCH_START'; }
-    | { type: 'FETCH_SUCCESS'; payload: IPost[] }
-    | { type: 'FETCH_ERROR'; payload: string }
-    | { type: 'RESET'; }
-    | { type: 'ADD_POST'; payload: IPost }
-    | { type: 'REMOVE_POST'; payload: number };
-
-
-const postsReducer = (state: State, action: Action): State => {
-    switch(action.type){
-        case 'FETCH_START':
-            return {...state, isLoading: true, error: null};
-        case 'FETCH_SUCCESS':
-            return {...state, isLoading: false, posts: action.payload};
-        case 'FETCH_ERROR':
-            return {...state, isLoading: false, error: action.payload};
-        case 'RESET':
-            return {posts: [], isLoading: false, error: null};
-        case 'ADD_POST':
-            return {...state, posts: [action.payload, ...state.posts]};
-        case 'REMOVE_POST':
-            return {...state, posts: state.posts.filter((p) => p.id !== action.payload)};
-        default:
-            return state;
-    }
-};
-
-
-
-export const usePosts = () => {
-    const { user } = useAuth();
-    const [ state, dispatch ] = useReducer(postsReducer, {
-        posts: [],
-        isLoading: true,
-        error: null,
-    });
-
-    const isCancellRef = useRef(false);
-
-    const fetchPosts = useCallback(async () => {
-        isCancellRef.current = false;
-
-        dispatch({ type: 'FETCH_START' });
-
-        try{
+export const usePostsQuery = () => {
+    return useQuery({
+        queryKey: ["posts"],
+        queryFn: async () => {
             const response = await postApi.getPosts();
-            if(!isCancellRef.current){
-                dispatch({ type: 'FETCH_SUCCESS', payload: response.data });
+            return response.data;
+        },
+    });
+};
+
+export const useCreatePostMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (formData: FormData) => postApi.createPost(formData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+        },
+    });
+};
+
+export const useDeletePostMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (postId: number) => postApi.deletePost(postId),
+        onMutate: async (postId) => {
+            await queryClient.cancelQueries({ queryKey: ["posts"] });
+            const previousPosts = queryClient.getQueryData<IPost[]>(["posts"]);
+
+            queryClient.setQueryData<IPost[]>(["posts"], (old) => (old ? old.filter((p) => p.id !== postId) : []));
+
+            return { previousPosts };
+        },
+        onError: (_err, _postId, context) => {
+            if (context?.previousPosts) {
+                queryClient.setQueryData(["posts"], context.previousPosts);
             }
-        } catch (err) {
-            if(!isCancellRef.current){
-                const message = err instanceof Error ? err.message: 'Неизвестная ошибка!';
-                dispatch({ type: 'FETCH_ERROR', payload: `Не удалось загрузить посты: ${message}` });
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+        },
+    });
+};
+
+export const useLikePostMutation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (postId: number) => postApi.likePost(postId),
+        onMutate: async (postId) => {
+            await queryClient.cancelQueries({ queryKey: ["posts"] });
+            const previousPosts = queryClient.getQueryData<IPost[]>(["posts"]);
+
+            queryClient.setQueryData<IPost[]>(["posts"], (old) =>
+                old
+                    ? old.map((p) => {
+                        if (p.id === postId) {
+                            const newIsLiked = !p.isLiked;
+                            return {
+                                ...p,
+                                isLiked: newIsLiked,
+                                likesCount: (p.likesCount || 0) + (newIsLiked ? 1 : -1),
+                            };
+                        }
+                        return p;
+                    })
+                    : []
+            );
+
+            return { previousPosts };
+        },
+        onError: (_err, _postId, context) => {
+            if (context?.previousPosts) {
+                queryClient.setQueryData(["posts"], context.previousPosts);
             }
-        } finally {
-            if(isCancellRef.current) {
-                dispatch({ type: 'FETCH_ERROR', payload: 'Запрос о постах отменён!' });
-            }
-        }
-    }, []);
-
-
-    useEffect(() => {
-        return () => {
-            isCancellRef.current = true;
-        };
-    }, []);
-
-
-    useEffect(() => {
-        if(user) {
-            fetchPosts();
-        } else {
-            dispatch({ type: 'RESET' });
-        }
-    }, [user, fetchPosts]);
-
-
-    const addPost = useCallback((newPost: IPost) => {
-        dispatch({ type: 'ADD_POST', payload: newPost });
-    }, []);
-
-    const removePost = useCallback((postId: number) => {
-        dispatch({ type: 'REMOVE_POST', payload: postId });
-    }, []);
-
-
-    return {
-        posts: state.posts,
-        isLoading: state.isLoading,
-        error: state.error,
-        refetch: fetchPosts,
-        addPost,
-        removePost,
-    };
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+        },
+    });
 };

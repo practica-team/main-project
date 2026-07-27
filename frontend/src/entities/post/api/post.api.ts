@@ -11,6 +11,7 @@ interface IPostRawResponse {
     imagePath?: string;
     likesCount?: number;
     commentsCount?: number;
+    isLiked?: boolean;
 }
 
 //Удалить маппер когда бекенд будет всё правильно делать
@@ -27,6 +28,7 @@ const mapPostResponse = (data: IPostRawResponse): IPost => ({
     imagePath: data.imagePath,
     likesCount: data.likesCount || 0,
     commentsCount: data.commentsCount || 0,
+    isLiked: false,
 });
 
 export const postApi = {
