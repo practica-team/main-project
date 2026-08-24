@@ -41,6 +41,11 @@ export const postApi = {
         const response = await $api.post<IPostRawResponse>('/posts', formData);
         return { data: mapPostResponse(response.data) };
     },
+
+    getUserPost: async (userId: string) => {
+        const response = await $api.post<IPostRawResponse[]>(`/posts/user/${userId}`);
+        return {...response, data: response.data.map(mapPostResponse) };
+    },
     
     likePost: (postId: number) => $api.post(`/posts/${postId}/like`),
     
