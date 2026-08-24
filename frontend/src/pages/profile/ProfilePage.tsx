@@ -1,7 +1,8 @@
 import { useAuth } from "@features/auth";
 import { PostCard } from "@features/feed";
+import { useSendRequestMutation } from "@features/friends";
 import { useUserPostsQuery, useUserQuery } from "@features/profile";
-import { Edit, Message } from "@mui/icons-material";
+import { Edit, Message, PersonAdd } from "@mui/icons-material";
 import { Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, Container, Divider, Grid, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -21,6 +22,13 @@ export const ProfilePage = () => {
 
     const user = isOwnProfile ? currentUser : profileUser;
     const isLoading = isOwnProfile ? !currentUser : isUserLoading;
+
+    const sendRequestMutation = useSendRequestMutation();
+    const handleAddFriend = () => {
+        if(user?.id) {
+            sendRequestMutation.mutate(user.id);
+        }
+    };
 
 
     const formattedDate = useMemo(() => {
@@ -108,6 +116,15 @@ export const ProfilePage = () => {
                                         </Button>
                                     ):(
                                         <>
+                                            <Button
+                                                variant="contained"
+                                                startIcon={<PersonAdd />}
+                                                sx={{ textTransform: 'none' }}
+                                                onClick={handleAddFriend}
+                                                disabled={sendRequestMutation.isPending}
+                                            >
+                                                {sendRequestMutation.isPending ? 'Отправка...' : 'Добавить в друзья.'}
+                                            </Button>
                                             <Button 
                                                 variant="outlined"
                                                 startIcon={<Message />}
