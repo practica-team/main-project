@@ -19,8 +19,10 @@ src/
 │   └── sidebar/<br>
 ├── features/      # Функциональные возможности<br>
 │   ├── auth/ # Авторизация (api, model, ui)<br>
-│   └── feed/ # Лента новостей (хук usePosts, ui)<br>
+│   ├── feed/ # Лента новостей (хук usePosts, ui)<br>
+│   └── friendship/ # Система друзей (хуки)<br>
 ├── entities/      # Бизнес-сущности<br>
+│   ├── friend/    # Сущность Дружба/Заявки (api, types)<br>
 │   ├── user/      # Сущность пользователя (types, api)<br>
 │   └── post/      # Сущность поста (types, api с маппером(пока))<br>
 └── shared/        # Переиспользуемый код<br>
@@ -273,5 +275,6 @@ react-router-dom.
 - Частино завершенна Auth Flow с обработкой ошибок 401
 - Создан слой entities/user
 - Добавлено отображение данных пользователя (Header с аватаром и username, ProfilePage с полной информацией)
-- Создан сслой entities/post с маппером(Лента новостей) entities/post; features/feed с useReducer; PostCard, Feed, SkeletonPost;Создание постов с изображениями (FormData
-;Удаление постов
+- Создан слой entities/post с маппером(Лента новостей) entities/post; features/feed с useReducer; PostCard, Feed, SkeletonPost;Создание постов с изображениями (FormData
+;Удаление постов)
+- Сделана система друзей с тремя состояниями (друзья, входящие/исходящие заявки) с оптимистичным обновлением (хуки) и инетграцией с профилем
