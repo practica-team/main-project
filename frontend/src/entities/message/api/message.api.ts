@@ -11,4 +11,10 @@ export const messageApi = {
         $api.get<IMessage[]>(`/conversations/${conversationId}/messages`, {
             params: { page, limit },
         }),
+    
+    sendMessage: (conversationId: string, content: string) =>
+        $api.post<IMessage>(`/conversations/${conversationId}/messages`, { content }),
+
+    markRead: (conversationId: string) =>
+        $api.post(`conversations/${conversationId}/read`),
 };

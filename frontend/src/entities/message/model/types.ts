@@ -17,3 +17,9 @@ export interface IConversation {
     unreadCount?: number;
     createdAt: string;
 }
+
+export interface ITypingPayload {
+    conversationId: string;
+    userId: string;
+    isTyping?: boolean;
+}
