@@ -106,3 +106,17 @@ export const useOpenConversationMutations = () => {
         }
     });
 };
+
+
+let activeConversationId: string | undefined;
+
+export const setActiveConversationId = (id?: string) => {
+    activeConversationId = id;
+};
+
+export const getActiveConversationId = () => activeConversationId;
+
+export const useUnreadTotal = () => {
+    const { data: conversations = [] } = useConversationsQuery();
+    return conversations.reduce((sum, c) => sum + (c.unreadCount ?? 0), 0);
+};
