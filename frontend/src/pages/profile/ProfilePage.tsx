@@ -5,11 +5,12 @@ import { useUserPostsQuery, useUserQuery } from "@features/profile";
 import { Edit, Message, PersonAdd } from "@mui/icons-material";
 import { Avatar, Box, Button, Card, CardContent, Chip, CircularProgress, Container, Divider, Grid, Typography } from "@mui/material";
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const ProfilePage = () => {
     const { user: currentUser } = useAuth();
     const { id } = useParams<{ id: string}>();
+    const navigate = useNavigate();
 
     const profileUserId = id || currentUser?.id;
     const isOwnProfile = !id || id === currentUser?.id;
@@ -129,6 +130,7 @@ export const ProfilePage = () => {
                                                 variant="outlined"
                                                 startIcon={<Message />}
                                                 sx={{ textTransform: 'none' }}
+                                                onClick={() => navigate(`/messages?userId=${user.id}`)}
                                             >
                                                 Написать
                                             </Button>

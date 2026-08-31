@@ -96,3 +96,13 @@ export const useMarkReadMutation = () => {
         }
     });
 };
+
+export const useOpenConversationMutations = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (userId: string) => messageApi.getOrCreateConversation(userId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: messageKeys.conversations });
+        }
+    });
+};
