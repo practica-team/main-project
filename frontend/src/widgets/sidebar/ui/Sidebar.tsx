@@ -2,6 +2,7 @@ import { List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@m
 import { MENU_ITEMS } from '@shared';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './Sidebar.module.css';
+import { UnreadMessagesBadge } from '@features/messages';
 
 
 export const SiderBar = () => {
@@ -26,7 +27,11 @@ export const SiderBar = () => {
                             className={`${styles.menuItem} ${isActive ? styles.menuItemActive : ''}`}
                         >
                             <ListItemIcon className={styles.menuIcon}>
-                                {item.icon}
+                                {item.path === '/messages' ? (
+                                    <UnreadMessagesBadge>{item.icon}</UnreadMessagesBadge>
+                                ):(
+                                    item.icon
+                                )}
                             </ListItemIcon>
                             <ListItemText
                                 primary={item.label}

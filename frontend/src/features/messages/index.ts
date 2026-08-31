@@ -4,6 +4,9 @@ export {
     useSendMessageMutation,
     useMarkReadMutation,
     useOpenConversationMutations,
+    useUnreadTotal,
+    getActiveConversationId,
+    setActiveConversationId
 } from './model/useMessages';
 
 export { useSocketSubscription } from './model/useSocketSubscription';
@@ -13,3 +16,5 @@ export { ConversationList } from './ui/ConversationList';
 export { ChatWindow } from './ui/ChatWindow';
 export { MessageBubble } from './ui/MessageBubble';
 export { MessageInput } from './ui/MessageInput';
+export { MessagesToast } from './ui/MessagesToast';
+export { UnreadMessagesBadge } from './ui/UnreadMessagesBadge';

@@ -1,34 +1,51 @@
-import { ChatWindow, ConversationList, useConversationsQuery, useMarkReadMutation, useOpenConversationMutations, useSocketSubscription } from "@features/messages";
+import { ChatWindow, ConversationList, setActiveConversationId, useConversationsQuery, useMarkReadMutation, useOpenConversationMutations, useSocketSubscription } from "@features/messages";
 import { Box, Card, Container, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export const MessagesPage = () => {
-    const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
     const [searchParams, setSearchParams] = useSearchParams();
 
+    const urlConversationId = searchParams.get('conversation') ?? undefined;
+    const [manualId, setManualId] = useState<string | undefined>();
+
+    const selectedId = urlConversationId ?? manualId;
     const { data: conversations = [] } = useConversationsQuery();
     const { typing } = useSocketSubscription(selectedId);
-    const markRead = useMarkReadMutation();
-    const openConversation = useOpenConversationMutations();
+    const { mutate: markReadMutate } = useMarkReadMutation();
+    const { mutate: openConversationMutate } = useOpenConversationMutations();
+
+    const userIdParam = searchParams.get('userId');
 
     useEffect(() => {
-        const userId = searchParams.get('userId');
-        if(!userId){
+        if(!userIdParam){
             return;
         }
 
-        openConversation.mutate(userId, {
+        openConversationMutate(userIdParam, {
             onSuccess: (res) => {
-                setSelectedId(res.data.id);
-                setSearchParams({}, { replace: true });
+                setSearchParams({ conversation: res.data.id }, { replace: true });
             },
         });
-    }, [searchParams, openConversation, setSearchParams]);
+    }, [userIdParam, openConversationMutate, setSearchParams]);
+
+    useEffect(() => {
+        if(urlConversationId){
+            markReadMutate(urlConversationId);
+        }
+    }, [urlConversationId, markReadMutate]);
+
+    useEffect(() => {
+        setActiveConversationId(selectedId);
+        return () => setActiveConversationId(undefined);
+    });
 
     const handleSelect = (id: string) => {
-        setSelectedId(id);
-        markRead.mutate(id);
+        if(urlConversationId){
+            setSearchParams({}, { replace: true });
+        }
+        setManualId(id);
+        markReadMutate(id);
     };
 
     const selectedConversation = conversations.find((c) => c.id === selectedId);
@@ -36,12 +53,12 @@ export const MessagesPage = () => {
     return (
         <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
             <Card sx={{ boxShadow: 3, overflow: 'hidden' }}>
-                <Box sx={{ display: 'flex', height: 'calc(100vh - 180px', minHeight: 420 }}>
+                <Box sx={{ display: 'flex', height: 'calc(100vh - 180px)', minHeight: 420 }}>
 
                     <Box
                         sx={{
                             width: { xs: '100%', md: 340 },
-                            borderRight: { mb: '1px solid' },
+                            borderRight: { md: '1px solid' },
                             borderColor: 'divider',
                             overflowY: 'auto',
                             display: { xs: selectedConversation ? 'none' : 'block', md: 'block' },
