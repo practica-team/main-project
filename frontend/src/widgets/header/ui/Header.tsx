@@ -7,6 +7,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link, useNavigate } from "react-router-dom";
 import styles from './Header.module.css';
 import { LogoutButton, useAuth } from "@features/auth";
+import { UnreadMessagesBadge } from "@features/messages";
+import ChatIcon from '@mui/icons-material/Chat';
 
 export const Header = () => {
     const { user } = useAuth();
@@ -44,7 +46,13 @@ export const Header = () => {
                     />
                 </Box>
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center'}}>
-                    <IconButton className={styles.notificationsButton}>
+                    <IconButton className={styles.notificationsButton} onClick={() => navigate('/messages')}>
+                        <UnreadMessagesBadge>
+                            <ChatIcon />
+                        </UnreadMessagesBadge>
+                    </IconButton>
+
+                    <IconButton className={styles.notificationsButton} onClick={() => navigate('/messages')}>
                         <Badge badgeContent={3} color="error">
                             <NotificationsIcon />
                         </Badge>

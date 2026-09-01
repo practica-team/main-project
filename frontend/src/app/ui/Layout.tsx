@@ -1,3 +1,4 @@
+import { MessagesToast } from "@features/messages";
 import { Header } from "@widgets/header";
 import { SiderBar } from "@widgets/sidebar";
 import { Outlet } from 'react-router-dom';
@@ -12,6 +13,8 @@ export const Layout = () => {
                     <Outlet />
                 </main>
             </div>
+
+            <MessagesToast />
         </div>
     );
 };

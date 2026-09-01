@@ -13,7 +13,7 @@ export const ProtectedRoute = ({children}: {children: React.ReactNode}) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: '100vh',
-                    bgcolor: '#edeeff0'
+                    bgcolor: '#edeef0'
                 }}
             >
                 <CircularProgress size={48} color="primary" />
